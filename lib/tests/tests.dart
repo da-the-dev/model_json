@@ -6,10 +6,12 @@ class User extends Equatable with Model {
   // TODO: fields should be final. Model's `fromJson` should use the class's constructor
   String? id;
   String? name;
+  List<String>? list;
 
   User({
     this.id,
     this.name,
+    this.list,
   });
 
   // TODO: This preferably should be moved to Model
@@ -19,12 +21,14 @@ class User extends Equatable with Model {
 
 void main() {
   test("class to json", () {
-    final user = User(id: "543efgtyt543erew", name: "john doe");
+    final user = User(
+        id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]);
     expect(
       user.toJson(),
       {
         "id": "543efgtyt543erew",
         "name": "john doe",
+        "list": ['hello', 'world']
       },
     );
   });
@@ -34,12 +38,14 @@ void main() {
     user.fromJson({
       "id": "543efgtyt543erew",
       "name": "john doe",
+      "list": ["hello", "world"]
     });
     expect(
       user,
       User(
         id: "543efgtyt543erew",
         name: "john doe",
+        list: ["hello", "world"]
       ),
     );
   });
