@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   runt-tests:
-    runs-on: ${{ fbtromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
