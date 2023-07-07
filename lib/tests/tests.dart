@@ -1,14 +1,20 @@
 import 'package:model/model.dart';
 import 'package:test/test.dart';
+import 'package:equatable/equatable.dart';
 
-class User with Model {
-  final String id;
-  final String name;
+class User extends Equatable with Model {
+  // TODO: fields should be final. Model's `fromJson` should use the class's constructor
+  String? id;
+  String? name;
 
   User({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
   });
+
+  // This preferably should be moved to Model
+  @override
+  List<Object?> get props => [id, name];
 }
 
 void main() {
@@ -20,6 +26,21 @@ void main() {
         "id": "543efgtyt543erew",
         "name": "john doe",
       },
+    );
+  });
+
+  test("class from json", () {
+    var user = User();
+    user.fromJson({
+      "id": "543efgtyt543erew",
+      "name": "john doe",
+    });
+    expect(
+      user,
+      User(
+        id: "543efgtyt543erew",
+        name: "john doe",
+      ),
     );
   });
 }
