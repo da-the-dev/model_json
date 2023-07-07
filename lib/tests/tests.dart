@@ -12,7 +12,7 @@ class User extends Equatable with Model {
     this.name,
   });
 
-  // This preferably should be moved to Model
+  // TODO: This preferably should be moved to Model
   @override
   List<Object?> get props => [id, name];
 }
