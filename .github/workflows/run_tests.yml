@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  runt-tests:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
