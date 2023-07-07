@@ -1,0 +1,7 @@
+name: model
+description: DB model managment library
+
+environment:
+  sdk: '^3.0.0'
+dependencies:
+  test: ^1.24.4
