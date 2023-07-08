@@ -21,18 +21,13 @@ mixin class Model {
     return json;
   }
 
-  void fromJson(Map<String, dynamic> json) {
-    final classReflection = reflectClass(this.runtimeType);
-    final instanceReflection = reflect(this);
-
-    for (final entry in classReflection.declarations.entries) {
-      if (entry.value is VariableMirror) {
-        final fieldName = symbolName(entry.key);
-        if (json.containsKey(fieldName)) {
-          final value = json[fieldName];
-          instanceReflection.setField(entry.key, value);
-        }
-      }
-    }
-  }
+  
+  static T fromJson<T>(Map<String, dynamic> json) =>
+      reflectClass(T)
+          .newInstance(
+            Symbol.empty,
+            [],
+            json.map((key, value) => MapEntry(Symbol(key), value)),
+          )
+          .reflectee;
 }
