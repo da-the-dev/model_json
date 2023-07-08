@@ -3,7 +3,6 @@ import 'package:test/test.dart';
 import 'package:equatable/equatable.dart';
 
 class User extends Equatable with Model {
-  // TODO: fields should be final. Model's `fromJson` should use the class's constructor
   final String id;
   final String name;
   final List<String> list;
