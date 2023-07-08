@@ -1,5 +1,7 @@
 import 'dart:mirrors';
 
+import 'package:equatable/equatable.dart';
+
 mixin class Model {
   static String symbolName(Symbol symbol) {
     final str = symbol.toString();
@@ -21,13 +23,22 @@ mixin class Model {
     return json;
   }
 
-  
-  static T fromJson<T>(Map<String, dynamic> json) =>
-      reflectClass(T)
-          .newInstance(
-            Symbol.empty,
-            [],
-            json.map((key, value) => MapEntry(Symbol(key), value)),
-          )
-          .reflectee;
+  static T fromJson<T>(Map<String, dynamic> json) => reflectClass(T)
+      .newInstance(
+        Symbol.empty,
+        [],
+        json.map((key, value) => MapEntry(Symbol(key), value)),
+      )
+      .reflectee;
+
+  @override
+  List<Object?> get props {
+    final instanceReflection = reflect(this);
+    final classReflection = reflectClass(instanceReflection.runtimeType);
+
+    return classReflection.declarations.entries
+        .where((entry) => entry is VariableMirror)
+        .map((e) => e.value)
+        .toList();
+  }
 }

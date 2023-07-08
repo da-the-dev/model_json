@@ -13,10 +13,6 @@ class User extends Equatable with Model {
     required this.list,
   });
 
-  // TODO: This preferably should be moved to Model
-  @override
-  List<Object?> get props => [id, name];
-
   // TODO: This should be moved to Model
   static User get empty => User(
         id: "",
@@ -48,6 +44,15 @@ void main() {
       "name": "john doe",
       "list": ["hello", "world"]
     });
+    expect(
+      user,
+      User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
+    );
+  });
+
+  test("class props", () {
+    final user = User(
+        id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]);
     expect(
       user,
       User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
