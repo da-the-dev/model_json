@@ -53,4 +53,9 @@ void main() {
       User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
     );
   });
+
+  test("empty", () {
+    final user = User.empty;
+    expect(user, User(id: '', name: '', list: ['']));
+  });
 }

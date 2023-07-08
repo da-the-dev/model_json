@@ -21,13 +21,14 @@ mixin class Model {
     return json;
   }
 
-  
-  static T fromJson<T>(Map<String, dynamic> json) =>
-      reflectClass(T)
-          .newInstance(
-            Symbol.empty,
-            [],
-            json.map((key, value) => MapEntry(Symbol(key), value)),
-          )
-          .reflectee;
+  static T fromJson<T>(Map<String, dynamic> json) => reflectClass(T)
+      .newInstance(
+        Symbol.empty,
+        [],
+        json.map((key, value) => MapEntry(Symbol(key), value)),
+      )
+      .reflectee;
+
+  static T empty<T>(Map<String, dynamic> json) =>
+      reflectClass(T).newInstance(Symbol.empty, [], {}).reflectee;
 }
