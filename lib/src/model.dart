@@ -19,10 +19,10 @@ mixin class Model {
         final value = instanceReflection.getField(entry.key).reflectee;
         if(value is Model && value.runtimeType != Model){
           json[symbolName(entry.key)] = (value).toJson();
-        }else if(value is Iterable && value.runtimeType!= Iterable){
+        }else if(value is Iterable<Model> && value.runtimeType!= Iterable<Model>){
           json[symbolName(entry.key)] = new List<Map<String, dynamic>>.empty(growable: true);
           for (final element in value){
-            json[symbolName(entry.key)].add(element.json);
+            json[symbolName(entry.key)].add(element.toJson());
           }
         }else{
           json[symbolName(entry.key)] = (value);
