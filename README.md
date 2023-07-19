@@ -1,4 +1,4 @@
-# model
+# model_json
 This package helps you with managing object models for databases.
 
 ## Getting started
