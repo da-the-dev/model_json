@@ -1,4 +1,4 @@
-import 'package:model/model.dart';
+import 'package:model_json/src/model_json.dart';
 import 'package:test/test.dart';
 import 'package:equatable/equatable.dart';
 
