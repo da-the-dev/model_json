@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:mirrors';
 
 import 'package:equatable/equatable.dart';
@@ -16,7 +17,16 @@ mixin class Model {
     for (final entry in classReflection.declarations.entries) {
       if (entry.value is VariableMirror) {
         final value = instanceReflection.getField(entry.key).reflectee;
-        json[symbolName(entry.key)] = value;
+        if(value is Model && value.runtimeType != Model){
+          json[symbolName(entry.key)] = (value).toJson();
+        }else if(value is Iterable<Model> && value.runtimeType!= Iterable<Model>){
+          json[symbolName(entry.key)] = new List<Map<String, dynamic>>.empty(growable: true);
+          for (final element in value){
+            json[symbolName(entry.key)].add(element.toJson());
+          }
+        }else{
+          json[symbolName(entry.key)] = (value);
+        }
       }
     }
 
