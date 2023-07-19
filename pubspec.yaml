@@ -1,4 +1,4 @@
-name: model
+name: model_json
 description: DB model managment library
 
 environment:
