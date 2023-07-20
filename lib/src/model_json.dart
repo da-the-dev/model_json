@@ -27,16 +27,6 @@ mixin class Model {
   static T fromJson<T>(Map<String, dynamic> json) {
     final classReflection = reflectClass(T);
 
-    classReflection.declarations.forEach((symbol, declaration) {
-      if (declaration is VariableMirror) {
-        String fieldName = MirrorSystem.getName(symbol);
-        Type fieldType = declaration.type.reflectedType;
-
-        print('Field Name: $fieldName');
-        print('Field Type: $fieldType');
-      }
-    });
-
     return classReflection.newInstance(
       Symbol.empty,
       [],
