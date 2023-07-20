@@ -71,6 +71,10 @@ dynamic containerObjectTypeMapper(Type reflectedType, dynamic value) {
   if (reflectType(reflectedType).isSubtypeOf(reflectType(List))) {
     final elementType =
         reflectType(reflectedType).typeArguments[0].reflectedType;
+
+    if (reflectType(elementType).isSubtypeOf(reflectType(List))) {
+      for (final elem in value) containerObjectTypeMapper(elementType, elem);
+    }
     return listFromDynamic
         .callWith(typeArguments: [elementType], parameters: [value]);
   }
@@ -94,4 +98,4 @@ dynamic typeMapper(Type reflectedType, dynamic value) {
 }
 
 List<T> listFromDynamic<T>(List<dynamic> value) =>
-    List.castFrom<dynamic, T>(value);
+    List.castFrom<dynamic, T>(value.map((e) => typeMapper(T, e)).toList());
