@@ -1,4 +1,7 @@
 import 'dart:mirrors';
+import 'package:type_plus/type_plus.dart';
+
+import 'helpers/helpers.dart';
 
 mixin class Model {
   static String symbolName(Symbol symbol) {
@@ -38,64 +41,11 @@ mixin class Model {
       Symbol.empty,
       [],
       json.map((key, value) {
-        final type =
-            (classReflection.declarations[Symbol(key)] as VariableMirror)
-                .type
-                .reflectedType;
+        var type =
+            (classReflection.declarations[Symbol(key)] as VariableMirror).type;
+        final reflectedType = type.reflectedType;
 
-        switch (type) {
-          case int:
-            return MapEntry(Symbol(key), int.parse(value));
-          case double:
-            return MapEntry(Symbol(key), double.parse(value));
-          case String:
-            return MapEntry(Symbol(key), value.toString());
-          case bool:
-            return MapEntry(Symbol(key), bool.tryParse(value));
-          case Record:
-            throw Exception("Records are not supported as member fields");
-          case Set:
-            throw Exception("Sets are not supported as member fields");
-          case Map:
-            throw Exception("Maps are not supported as member fields");
-          case Symbol:
-            return MapEntry(Symbol(key), Symbol(value));
-        }
-
-        if (value.runtimeType == List<dynamic>) {
-          final elementType =
-              (classReflection.declarations[Symbol(key)] as VariableMirror)
-                  .type
-                  .typeArguments[0]
-                  .reflectedType;
-          switch (elementType) {
-            case int:
-              return MapEntry(Symbol(key), List<int>.from(value));
-            case double:
-              return MapEntry(Symbol(key), List<double>.from(value));
-            case String:
-              return MapEntry(Symbol(key), List<String>.from(value));
-            case bool:
-              return MapEntry(Symbol(key), List<bool>.from(value));
-            case Record:
-              throw Exception(
-                  "Records are not supported as type argument for member lists");
-            case List:
-              throw Exception(
-                  "Lists are not supported as type argument for member lists");
-            case Set:
-              throw Exception(
-                  "Sets are not supported as type argument for member lists");
-            case Map:
-              throw Exception(
-                  "Maps are not supported as type argument for member lists");
-            case Symbol:
-              return MapEntry(Symbol(key), List<Symbol>.from(value));
-            default:
-              throw Exception("Unsupported type conversion");
-          }
-        }
-        throw Exception("Unsupported type conversion");
+        return MapEntry(Symbol(key), typeMapper(reflectedType, value));
       }),
     ).reflectee;
   }
@@ -110,3 +60,37 @@ mixin class Model {
         .toList();
   }
 }
+
+dynamic fundamentalTypeMapper(Type reflectedType, dynamic value) {
+  switch (reflectedType) {
+    case int:
+      return parseInt(value);
+    case double:
+      return parseDouble(value);
+    case String:
+      return value as String;
+    case bool:
+      return parseBool(value);
+    case Symbol:
+      return parseSymbol(value);
+  }
+  return containerObjectTypeMapper(reflectedType, value);
+}
+
+dynamic containerObjectTypeMapper(Type reflectedType, dynamic value) {
+  if (reflectType(reflectedType).isSubtypeOf(reflectType(List))) {
+    final elementType =
+        reflectType(reflectedType).typeArguments[0].reflectedType;
+    return listFromDynamic
+        .callWith(typeArguments: [elementType], parameters: [value]);
+  }
+
+  if (reflectType(reflectedType).isSubtypeOf(reflectType(Map))) {}
+}
+
+dynamic typeMapper(Type reflectedType, dynamic value) {
+  return fundamentalTypeMapper(reflectedType, value);
+}
+
+List<T> listFromDynamic<T>(List<dynamic> value) =>
+    List.castFrom<dynamic, T>(value);
