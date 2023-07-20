@@ -1,7 +1,7 @@
 name: model_json
 description: DB model managment library
 homepage: https://github.com/da-the-dev/model_json
-version: 1.0.1
+version: 1.0.2
 
 environment:
   sdk: '^3.0.0'
