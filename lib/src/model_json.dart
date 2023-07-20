@@ -3,12 +3,12 @@ import 'package:type_plus/type_plus.dart';
 
 import 'helpers/helpers.dart';
 
-mixin class Model {
-  static String symbolName(Symbol symbol) {
-    final str = symbol.toString();
-    return str.substring(8, str.length - 2);
-  }
+String symbolName(Symbol symbol) {
+  final str = symbol.toString();
+  return str.substring(8, str.length - 2);
+}
 
+mixin class Model {
   Map<String, dynamic> toJson() {
     var json = Map<String, dynamic>();
     final instanceReflection = reflect(this);
@@ -76,6 +76,17 @@ dynamic containerObjectTypeMapper(Type reflectedType, dynamic value) {
   }
 
   if (reflectType(reflectedType).isSubtypeOf(reflectType(Map))) {}
+
+  /* For some reason reflectClass(reflectedType).mixin doesn't evaluate
+   * to mixin, so this is a workaround
+  */
+  if (symbolName(reflectClass(reflectedType).superclass!.simpleName)
+      .contains("Model")) {
+    return Model.fromJson.callWith(
+      typeArguments: [reflectedType],
+      parameters: [value],
+    );
+  }
 }
 
 dynamic typeMapper(Type reflectedType, dynamic value) {
