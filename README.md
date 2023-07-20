@@ -17,17 +17,26 @@ class User extends Equatable with Model {
 }
 ```
 
+Due to limitations in Dart, specifically an inability to use types derived from variables as parameters for generics, `model_json` relies on `type_plus`. To use `model_json`, add your classes to `type_plus`'s class definitions like so:
+```dart
+void main() {
+  . . .
+  TypePlus.add<User>();
+  . . .
+}
+```
+
+Feel free to move this process to a separate function in case you have many classes.
+
 ## Usage
 ### Parse from JSON
 Say we send a request `GET /user?id=` and the response body contains a user object as JSON. Let's parse it:
 
 ```dart
 final client = http.Client;
-final uri = Uri(
-    scheme: "http",
-    host: "localhost",
-    port: 5000,
-    path: "/user",
+final uri = Uri.http(
+    "localhost:5000",
+    "/user",
     queryParameters: {"id": "awd3512gf"},
 );
 final response = await client.get(uri);
@@ -40,11 +49,9 @@ All classes that mixin `Model` have `toJSON` method. Say we want to save a user 
 
 ```dart
 final client = http.Client;
-final uri = Uri(
-    scheme: "http",
-    host: "localhost",
-    port: 5000,
-    path: "/user",
+final uri = Uri.http(
+    "localhost:5000",
+    "/user",
     queryParameters: User.toJson(),
 );
 final response = await client.post(uri);
