@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:model_json/src/model_json.dart';
 import 'package:test/test.dart';
 import 'package:equatable/equatable.dart';
@@ -21,6 +23,30 @@ class User extends Equatable with Model {
       );
 }
 
+
+class CompositionTest extends Equatable with Model{
+  User? user;
+  CompositionTest({this.user});
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [user];
+}
+
+class MultipleCompositionTest extends Equatable with Model{
+  List<User>? users;
+
+  MultipleCompositionTest({
+    this.users
+  });
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [users];
+
+}
+
+
 void main() {
   test("class to json", () {
     final user = User(
@@ -38,12 +64,57 @@ void main() {
     );
   });
 
+  test("composition to json",(){
+    User user;
+    final CompositionTest compositionTest = CompositionTest(
+        user: User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
+    );
+    expect(
+        compositionTest.toJson(),
+        {
+          "user":{
+            "id": "543efgtyt543erew",
+            "name": "john doe",
+            "list": ['hello', 'world']
+          }
+        }
+    );
+  });
+  test("multiple composition to json",(){
+    User user;
+    final MultipleCompositionTest compositionTest = MultipleCompositionTest(
+        users: [
+          User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
+          User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
+        ]
+    );
+    expect(
+        compositionTest.toJson(),
+        {
+          "users": [
+            {
+            "id": "543efgtyt543erew",
+            "name": "john doe",
+            "list": ['hello', 'world']
+            },
+            {
+            "id": "543efgtyt543erew",
+            "name": "john doe",
+            "list": ['hello', 'world']
+            },
+          ]
+        }
+    );
+  });
+
+
+
   test("class from json", () {
-    User user = Model.fromJson({
+    final user = Model.fromJson<User>(jsonDecode(jsonEncode({
       "id": "543efgtyt543erew",
       "name": "john doe",
-      "list": ["hello", "world"]
-    });
+      "list": ["hello", "world"],
+    })));
     expect(
       user,
       User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
@@ -81,4 +152,5 @@ void main() {
       );
     });
   });
+
 }
