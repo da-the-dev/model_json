@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:model_json/src/model_json.dart';
 import 'package:test/test.dart';
 import 'package:equatable/equatable.dart';
@@ -108,11 +110,11 @@ void main() {
 
 
   test("class from json", () {
-    User user = Model.fromJson({
+    final user = Model.fromJson<User>(jsonDecode(jsonEncode({
       "id": "543efgtyt543erew",
       "name": "john doe",
-      "list": ["hello", "world"]
-    });
+      "list": ["hello", "world"],
+    })));
     expect(
       user,
       User(id: "543efgtyt543erew", name: "john doe", list: ["hello", "world"]),
